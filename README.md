@@ -168,4 +168,98 @@ Message: ${error.message}`;
 
 ---
 
-(Os passos restantes seguem o mesmo padrão.)
+### Passo 8: Atualizar Componentes e Templates
+
+#### **Componente de Listagem**
+**`src/app/post/index/index.component.ts`**:
+
+```typescript
+import { Component } from '@angular/core';
+import { PostService } from '../post.service';
+import { Post } from '../post';
+
+@Component({
+  selector: 'app-index',
+  templateUrl: './index.component.html'
+})
+export class IndexComponent {
+  posts: Post[] = [];
+
+  constructor(private postService: PostService) {}
+
+  ngOnInit(): void {
+    this.postService.getAll().subscribe((data: Post[]) => {
+      this.posts = data;
+    });
+  }
+
+  deletePost(id: number): void {
+    this.postService.delete(id).subscribe(() => {
+      this.posts = this.posts.filter(post => post.id !== id);
+    });
+  }
+}
+```
+
+**`src/app/post/index/index.component.html`**:
+
+```html
+<div class="container">
+  <h1>Exemplo de CRUD com Angular 18</h1>
+  <a routerLink="/post/create" class="btn btn-success">Criar Nova Postagem</a>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Título</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let post of posts">
+        <td>{{ post.id }}</td>
+        <td>{{ post.title }}</td>
+        <td>
+          <a [routerLink]="['/post', post.id, 'view']" class="btn btn-info">Visualizar</a>
+          <a [routerLink]="['/post', post.id, 'edit']" class="btn btn-primary">Editar</a>
+          <button (click)="deletePost(post.id)" class="btn btn-danger">Excluir</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+```
+
+---
+
+### Passo 9: Configurar `provideHttpClient`
+
+Atualize o arquivo `app.config.ts` para exportar o cliente HTTP:
+
+**`src/app/app.config.ts`**:
+
+```typescript
+import { provideHttpClient } from '@angular/common/http';
+import { ApplicationConfig } from '@angular/core';
+import { provideRouter } from '@angular/router';
+import { routes } from './app.routes';
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideRouter(routes), provideHttpClient()]
+};
+```
+
+---
+
+### Passo 10: Executar o Aplicativo
+
+Execute o comando a seguir para iniciar o servidor:
+
+```bash
+ng serve
+```
+
+Acesse o aplicativo em: [http://localhost:4200/post](http://localhost:4200/post)
+
+---
+
