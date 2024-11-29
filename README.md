@@ -265,20 +265,6 @@ export class IndexComponent {
 ```
 
 
-### Passo 9: Exportar provideHttpClient()
-
-**src/app/app.config.ts**
-```typescript
-import { ApplicationConfig } from '@angular/core';
-import { provideRouter } from '@angular/router';
-import { routes } from './app.routes';
-import { provideAnimations } from '@angular/platform-browser/animations';
-import { provideHttpClient } from '@angular/common/http';
-
-export const appConfig: ApplicationConfig = {
-  providers: [provideRouter(routes), provideAnimations(), provideHttpClient()]
-};
-```
 ## 2) Criar Template e Componente de Página
 
 Aqui, utilizaremos formulários reativos para armazenar dados no servidor utilizando serviços web. Vamos configurar o componente e o template.
@@ -553,6 +539,21 @@ export class ViewComponent {
 ```html
 <router-outlet></router-outlet>
 ```
+### Passo 9: Exportar provideHttpClient()
+
+**src/app/app.config.ts**
+```typescript
+import { ApplicationConfig } from '@angular/core';
+import { provideRouter } from '@angular/router';
+import { routes } from './app.routes';
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideHttpClient } from '@angular/common/http';
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideRouter(routes), provideAnimations(), provideHttpClient()]
+};
+```
+
 
 ### Executar Aplicativo Angular
 
