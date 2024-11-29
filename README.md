@@ -1,56 +1,68 @@
+# **Aplicação CRUD Angular 18 - Tutorial Exemplo**
 
-# Tutorial de Aplicativo CRUD com Angular 18
+Neste guia, vamos aprender sobre uma aplicação CRUD com Angular 18. Utilizaremos operações CRUD com web API. Vamos explorar um exemplo de aplicativo CRUD em Angular 18, explicado passo a passo.
 
-Neste guia, você aprenderá a criar um aplicativo CRUD utilizando o Angular 18. Este tutorial irá guiá-lo passo a passo para realizar operações CRUD com uma API web. Também utilizaremos o Bootstrap 5 para estilização.
+Olá! A versão mais recente do Angular, Angular 18, foi lançada há alguns meses, repleta de novos recursos e melhorias. Se você é novo no Angular ou está interessado em aprender a criar aplicações CRUD, está no lugar certo. Esta postagem vai guiá-lo através da construção de operações CRUD no Angular 18 com Bootstrap 5.
 
-O foco será construir um módulo CRUD para gerenciar postagens, incluindo as funcionalidades de listar, visualizar, criar, atualizar e excluir. Usaremos a API JSONPlaceholder para simplificar o processo.
+Não se preocupe, vou detalhar tudo para você. Siga estes passos simples para criar seu aplicativo CRUD no Angular 18. Após concluir todas as etapas, você verá um layout como a prévia abaixo.
 
----
+Neste exemplo, vamos nos concentrar na criação de um módulo CRUD para postagens, abrangendo funcionalidades de listagem, visualização, inserção, atualização e exclusão. Para facilitar, usaremos o serviço web JSONPlaceholder API. Eles fornecem todas as APIs necessárias, como listagem, visualização, criação, exclusão e atualização, tornando nosso trabalho mais simples.
 
-## Etapas para Criar um CRUD no Angular 18
+## Passos para Operação CRUD no Angular 18
 
-### Passo 1: Criar um Projeto Angular 18
+- **Passo 1:** Criar Projeto Angular 18
+- **Passo 2:** Instalar Bootstrap
+- **Passo 3:** Criar Módulo de Postagem
+- **Passo 4:** Criar Componentes para o Módulo
+- **Passo 5:** Criar Rotas
+- **Passo 6:** Criar Interface
+- **Passo 7:** Criar Serviço
+- **Passo 8:** Atualizar Lógica e Template do Componente
+- **Passo 9:** Exportar provideHttpClient()
+- **Executar Aplicativo Angular**
 
-Execute o comando a seguir para criar um novo projeto Angular:
+### Passo 1: Criar Projeto Angular 18
+
+Você pode criar seu aplicativo Angular usando o seguinte comando:
 
 ```bash
-ng new meu-novo-projeto
+ng new my-new-app
 ```
 
----
+### Passo 2: Instalar Bootstrap
 
-### Passo 2: Instalar o Bootstrap
-
-Instale o Bootstrap e adicione-o ao projeto:
+Instale o Bootstrap para sua aplicação CRUD:
 
 ```bash
 npm install bootstrap --save
 ```
 
-Atualize o arquivo `angular.json` para incluir o CSS do Bootstrap:
+Importe no arquivo angular.json:
 
 ```json
 "styles": [
   "node_modules/bootstrap/dist/css/bootstrap.min.css",
   "src/styles.css"
-]
+],
 ```
+# **Aplicação CRUD Angular 18 - Tutorial Exemplo**
 
----
+[Conteúdo inicial já traduzido anteriormente]
 
-### Passo 3: Criar um Módulo para Postagens
+### Passo 3: Criar Módulo de Postagem
 
-Crie um novo módulo chamado "postagens" utilizando o CLI do Angular:
+Após criar o aplicativo com sucesso, precisamos criar o módulo de postagem usando o comando da CLI do Angular:
 
 ```bash
 ng generate module post
 ```
 
----
+Após executar o comando com sucesso, serão criados arquivos no seguinte caminho:
+`src/app/post/post.module.ts`
 
 ### Passo 4: Criar Componentes para o Módulo
 
-Gere os componentes necessários para listar, visualizar, criar e editar postagens:
+Agora adicionaremos novos componentes ao nosso módulo de postagem:
 
 ```bash
 ng generate component post/index
@@ -59,11 +71,15 @@ ng generate component post/create
 ng generate component post/edit
 ```
 
----
+Após executar os comandos com sucesso, serão criados arquivos nos seguintes caminhos:
+- `src/app/post/index/*`
+- `src/app/post/view/*`
+- `src/app/post/create/*`
+- `src/app/post/edit/*`
 
-### Passo 5: Definir Rotas
+### Passo 5: Criar Rotas
 
-Configure as rotas no arquivo `app.routes.ts`:
+Atualize o arquivo de rotas `app.routes.ts`:
 
 ```typescript
 import { Routes } from '@angular/router';
@@ -73,7 +89,7 @@ import { CreateComponent } from './post/create/create.component';
 import { EditComponent } from './post/edit/edit.component';
 
 export const routes: Routes = [
-  { path: 'post', redirectTo: 'post/index', pathMatch: 'full' },
+  { path: 'post', redirectTo: 'post/index', pathMatch: 'full'},
   { path: 'post/index', component: IndexComponent },
   { path: 'post/:postId/view', component: ViewComponent },
   { path: 'post/create', component: CreateComponent },
@@ -81,18 +97,15 @@ export const routes: Routes = [
 ];
 ```
 
----
+### Passo 6: Criar Interface
 
-### Passo 6: Criar uma Interface
-
-Crie uma interface para modelar os dados das postagens:
+Crie a interface para o módulo de postagem:
 
 ```bash
 ng generate interface post/post
 ```
 
-**`src/app/post/post.ts`**:
-
+**src/app/post/post.ts**
 ```typescript
 export interface Post {
   id: number;
@@ -101,18 +114,17 @@ export interface Post {
 }
 ```
 
----
+### Passo 7: Criar Serviço
 
-### Passo 7: Criar um Serviço
+Criaremos o arquivo de serviço de postagem e implementaremos os métodos de serviço web getAll(), create(), find(), update() e delete().
 
-Crie um serviço para interagir com a API:
+Usaremos a API do site https://jsonplaceholder.typicode.com
 
 ```bash
 ng generate service post/post
 ```
 
-**`src/app/post/post.service.ts`**:
-
+**src/app/post/post.service.ts**
 ```typescript
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -124,105 +136,127 @@ import { Post } from './post';
   providedIn: 'root'
 })
 export class PostService {
-  private apiURL = 'https://jsonplaceholder.typicode.com';
+  private apiURL = "https://jsonplaceholder.typicode.com";
+
   httpOptions = {
-    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-  };
-
-  constructor(private httpClient: HttpClient) {}
-
-  getAll(): Observable<Post[]> {
-    return this.httpClient.get<Post[]>(`${this.apiURL}/posts/`)
-      .pipe(catchError(this.errorHandler));
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json'
+    })
   }
 
-  create(post: Post): Observable<Post> {
-    return this.httpClient.post<Post>(`${this.apiURL}/posts/`, JSON.stringify(post), this.httpOptions)
-      .pipe(catchError(this.errorHandler));
+  constructor(private httpClient: HttpClient) { }
+
+  getAll(): Observable<any> {
+    return this.httpClient.get(this.apiURL + '/posts/')
+      .pipe(
+        catchError(this.errorHandler)
+      )
   }
 
-  find(id: number): Observable<Post> {
-    return this.httpClient.get<Post>(`${this.apiURL}/posts/${id}`)
-      .pipe(catchError(this.errorHandler));
+  create(post: Post): Observable<any> {
+    return this.httpClient.post(this.apiURL + '/posts/', JSON.stringify(post), this.httpOptions)
+      .pipe(
+        catchError(this.errorHandler)
+      )
   }
 
-  update(id: number, post: Post): Observable<Post> {
-    return this.httpClient.put<Post>(`${this.apiURL}/posts/${id}`, JSON.stringify(post), this.httpOptions)
-      .pipe(catchError(this.errorHandler));
+  find(id: number): Observable<any> {
+    return this.httpClient.get(this.apiURL + '/posts/' + id)
+      .pipe(
+        catchError(this.errorHandler)
+      )
   }
 
-  delete(id: number): Observable<void> {
-    return this.httpClient.delete<void>(`${this.apiURL}/posts/${id}`, this.httpOptions)
-      .pipe(catchError(this.errorHandler));
+  update(id: number, post: Post): Observable<any> {
+    return this.httpClient.put(this.apiURL + '/posts/' + id, JSON.stringify(post), this.httpOptions)
+      .pipe(
+        catchError(this.errorHandler)
+      )
   }
 
-  errorHandler(error: any): Observable<never> {
-    const errorMessage = error.error instanceof ErrorEvent
-      ? error.error.message
-      : `Error Code: ${error.status}
-Message: ${error.message}`;
+  delete(id: number) {
+    return this.httpClient.delete(this.apiURL + '/posts/' + id, this.httpOptions)
+      .pipe(
+        catchError(this.errorHandler)
+      )
+  }
+
+  errorHandler(error: any) {
+    let errorMessage = '';
+    if (error.error instanceof ErrorEvent) {
+      errorMessage = error.error.message;
+    } else {
+      errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+    }
     return throwError(errorMessage);
   }
 }
 ```
 
----
+### Passo 8: Atualizar Lógica e Template do Componente
 
-### Passo 8: Atualizar Componentes e Templates
+#### 1) Template e Componente da Página de Lista
 
-#### **Componente de Listagem**
-**`src/app/post/index/index.component.ts`**:
-
+**src/app/post/index/index.component.ts**
 ```typescript
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { PostService } from '../post.service';
 import { Post } from '../post';
 
 @Component({
   selector: 'app-index',
-  templateUrl: './index.component.html'
+  standalone: true,
+  imports: [CommonModule, RouterModule],
+  templateUrl: './index.component.html',
+  styleUrl: './index.component.css'
 })
 export class IndexComponent {
   posts: Post[] = [];
 
-  constructor(private postService: PostService) {}
+  constructor(public postService: PostService) { }
 
   ngOnInit(): void {
     this.postService.getAll().subscribe((data: Post[]) => {
       this.posts = data;
-    });
+      console.log(this.posts);
+    })
   }
 
-  deletePost(id: number): void {
-    this.postService.delete(id).subscribe(() => {
-      this.posts = this.posts.filter(post => post.id !== id);
-    });
+  deletePost(id: number) {
+    this.postService.delete(id).subscribe(res => {
+      this.posts = this.posts.filter(item => item.id !== id);
+      console.log('Post deletado com sucesso!');
+    })
   }
 }
 ```
 
-**`src/app/post/index/index.component.html`**:
-
+**src/app/post/index/index.component.html**
 ```html
 <div class="container">
-  <h1>Exemplo de CRUD com Angular 18</h1>
-  <a routerLink="/post/create" class="btn btn-success">Criar Nova Postagem</a>
-  <table class="table">
+  <h1>Exemplo CRUD Angular 18</h1>
+  <a href="#" routerLink="/post/create/" class="btn btn-success">Criar Nova Postagem</a>
+
+  <table class="table table-striped">
     <thead>
       <tr>
         <th>ID</th>
         <th>Título</th>
-        <th>Ações</th>
+        <th>Corpo</th>
+        <th width="250px">Ação</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let post of posts">
         <td>{{ post.id }}</td>
         <td>{{ post.title }}</td>
+        <td>{{ post.body }}</td>
         <td>
-          <a [routerLink]="['/post', post.id, 'view']" class="btn btn-info">Visualizar</a>
-          <a [routerLink]="['/post', post.id, 'edit']" class="btn btn-primary">Editar</a>
-          <button (click)="deletePost(post.id)" class="btn btn-danger">Excluir</button>
+          <a href="#" [routerLink]="['/post/', post.id, 'view']" class="btn btn-info">Visualizar</a>
+          <a href="#" [routerLink]="['/post/', post.id, 'edit']" class="btn btn-primary">Editar</a>
+          <button type="button" (click)="deletePost(post.id)" class="btn btn-danger">Deletar</button>
         </td>
       </tr>
     </tbody>
@@ -230,36 +264,33 @@ export class IndexComponent {
 </div>
 ```
 
----
 
-### Passo 9: Configurar `provideHttpClient`
+### Passo 9: Exportar provideHttpClient()
 
-Atualize o arquivo `app.config.ts` para exportar o cliente HTTP:
-
-**`src/app/app.config.ts`**:
-
+**src/app/app.config.ts**
 ```typescript
-import { provideHttpClient } from '@angular/common/http';
 import { ApplicationConfig } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideHttpClient } from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideRouter(routes), provideHttpClient()]
+  providers: [provideRouter(routes), provideAnimations(), provideHttpClient()]
 };
 ```
 
----
+### Executar Aplicativo Angular
 
-### Passo 10: Executar o Aplicativo
-
-Execute o comando a seguir para iniciar o servidor:
+Execute o aplicativo com o comando:
 
 ```bash
 ng serve
 ```
 
-Acesse o aplicativo em: [http://localhost:4200/post](http://localhost:4200/post)
+Abra no navegador:
+http://localhost:4200/post
 
----
+*Link do Repositório: [https://github.com/savanihd/Angular-18-CRUD-Application-Tutorial-Example](https://github.com/savanihd/Angular-18-CRUD-Application-Tutorial-Example)*
 
+*Link do Repositório: [https://github.com/savanihd/Angular-18-CRUD-Application-Tutorial-Example](https://github.com/savanihd/Angular-18-CRUD-Application-Tutorial-Example)*
