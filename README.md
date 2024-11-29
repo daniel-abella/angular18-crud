@@ -332,8 +332,8 @@ export class CreateComponent {
         id="title"
         type="text"
         class="form-control">
-      <div *ngIf="f['title'].touched & f['title'].invalid" class="alert alert-danger">
-        <div *ngIf="f['title'].errors & f['title'].errors['required']">
+      <div *ngIf="f['title'].touched && f['title'].invalid" class="alert alert-danger">
+        <div *ngIf="f['title'].errors && f['title'].errors['required']">
           O título é obrigatório.
         </div>
       </div>
@@ -347,8 +347,8 @@ export class CreateComponent {
         type="text"
         class="form-control">
       </textarea>
-      <div *ngIf="f['body'].touched & f['body'].invalid" class="alert alert-danger">
-        <div *ngIf="f['body'].errors & f['body'].errors['required']">
+      <div *ngIf="f['body'].touched && f['body'].invalid" class="alert alert-danger">
+        <div *ngIf="f['body'].errors && f['body'].errors['required']">
           O conteúdo é obrigatório.
         </div>
       </div>
@@ -438,8 +438,8 @@ export class EditComponent {
         type="text"
         [(ngModel)]="post.title"
         class="form-control">
-      <div *ngIf="f['title'].touched & f['title'].invalid" class="alert alert-danger">
-        <div *ngIf="f['title'].errors & f['title'].errors['required']">
+      <div *ngIf="f['title'].touched && f['title'].invalid" class="alert alert-danger">
+        <div *ngIf="f['title'].errors && f['title'].errors['required']">
           O título é obrigatório.
         </div>
       </div>
@@ -454,8 +454,8 @@ export class EditComponent {
         [(ngModel)]="post.body"
         class="form-control">
       </textarea>
-      <div *ngIf="f['body'].touched & f['body'].invalid" class="alert alert-danger">
-        <div *ngIf="f['body'].errors & f['body'].errors['required']">
+      <div *ngIf="f['body'].touched && f['body'].invalid" class="alert alert-danger">
+        <div *ngIf="f['body'].errors && f['body'].errors['required']">
           O conteúdo é obrigatório.
         </div>
       </div>
