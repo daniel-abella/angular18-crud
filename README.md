@@ -279,6 +279,280 @@ export const appConfig: ApplicationConfig = {
   providers: [provideRouter(routes), provideAnimations(), provideHttpClient()]
 };
 ```
+## 2) Criar Template e Componente de Página
+
+Aqui, utilizaremos formulários reativos para armazenar dados no servidor utilizando serviços web. Vamos configurar o componente e o template.
+
+### Arquivo: `src/app/post/create/create.component.ts`
+
+```typescript
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { PostService } from '../post.service';
+import { Router } from '@angular/router';
+import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
+
+@Component({
+  selector: 'app-create',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
+  templateUrl: './create.component.html',
+  styleUrl: './create.component.css'
+})
+export class CreateComponent {
+
+  form!: FormGroup;
+
+  constructor(
+    public postService: PostService,
+    private router: Router
+  ) { }
+
+  ngOnInit(): void {
+    this.form = new FormGroup({
+      title: new FormControl('', [Validators.required]),
+      body: new FormControl('', Validators.required)
+    });
+  }
+
+  get f() {
+    return this.form.controls;
+  }
+
+  submit() {
+    console.log(this.form.value);
+    this.postService.create(this.form.value).subscribe((res: any) => {
+      console.log('Post criado com sucesso!');
+      this.router.navigateByUrl('post/index');
+    });
+  }
+}
+```
+
+### Arquivo: `src/app/post/create/create.component.html`
+
+```html
+<div class="container">
+  <h1>Criar Nova Postagem</h1>
+
+  <a href="#" routerLink="/post/index" class="btn btn-primary">Voltar</a>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+
+    <div class="form-group">
+      <label for="title">Título:</label>
+      <input
+        formControlName="title"
+        id="title"
+        type="text"
+        class="form-control">
+      <div *ngIf="f['title'].touched & f['title'].invalid" class="alert alert-danger">
+        <div *ngIf="f['title'].errors & f['title'].errors['required']">
+          O título é obrigatório.
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="body">Conteúdo</label>
+      <textarea
+        formControlName="body"
+        id="body"
+        type="text"
+        class="form-control">
+      </textarea>
+      <div *ngIf="f['body'].touched & f['body'].invalid" class="alert alert-danger">
+        <div *ngIf="f['body'].errors & f['body'].errors['required']">
+          O conteúdo é obrigatório.
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" type="submit" [disabled]="!form.valid">Enviar</button>
+  </form>
+</div>
+```
+
+---
+
+## 3) Editar Template e Componente de Página
+
+Aqui, utilizaremos formulários reativos para atualizar informações de postagens no servidor usando serviços web.
+
+### Arquivo: `src/app/post/edit/edit.component.ts`
+
+```typescript
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { PostService } from '../post.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Post } from '../post';
+import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
+
+@Component({
+  selector: 'app-edit',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
+  templateUrl: './edit.component.html',
+  styleUrl: './edit.component.css'
+})
+export class EditComponent {
+
+  id!: number;
+  post!: Post;
+  form!: FormGroup;
+
+  constructor(
+    public postService: PostService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) { }
+
+  ngOnInit(): void {
+    this.id = this.route.snapshot.params['postId'];
+    this.postService.find(this.id).subscribe((data: Post) => {
+      this.post = data;
+    });
+
+    this.form = new FormGroup({
+      title: new FormControl('', [Validators.required]),
+      body: new FormControl('', Validators.required)
+    });
+  }
+
+  get f() {
+    return this.form.controls;
+  }
+
+  submit() {
+    console.log(this.form.value);
+    this.postService.update(this.id, this.form.value).subscribe((res: any) => {
+      console.log('Post atualizado com sucesso!');
+      this.router.navigateByUrl('post/index');
+    });
+  }
+}
+```
+
+### Arquivo: `src/app/post/edit/edit.component.html`
+
+```html
+<div class="container">
+  <h1>Atualizar Postagem</h1>
+
+  <a href="#" routerLink="/post/index" class="btn btn-primary">Voltar</a>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+
+    <div class="form-group">
+      <label for="title">Título:</label>
+      <input
+        formControlName="title"
+        id="title"
+        type="text"
+        [(ngModel)]="post.title"
+        class="form-control">
+      <div *ngIf="f['title'].touched & f['title'].invalid" class="alert alert-danger">
+        <div *ngIf="f['title'].errors & f['title'].errors['required']">
+          O título é obrigatório.
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="body">Conteúdo</label>
+      <textarea
+        formControlName="body"
+        id="body"
+        type="text"
+        [(ngModel)]="post.body"
+        class="form-control">
+      </textarea>
+      <div *ngIf="f['body'].touched & f['body'].invalid" class="alert alert-danger">
+        <div *ngIf="f['body'].errors & f['body'].errors['required']">
+          O conteúdo é obrigatório.
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" type="submit" [disabled]="!form.valid">Atualizar</button>
+  </form>
+</div>
+```
+
+---
+
+## 4) Detalhar Template e Componente de Página
+
+Aqui, exibiremos os dados da postagem armazenados no servidor.
+
+### Arquivo: `src/app/post/view/view.component.ts`
+
+```typescript
+import { Component } from '@angular/core';
+import { PostService } from '../post.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Post } from '../post';
+
+@Component({
+  selector: 'app-view',
+  standalone: true,
+  imports: [],
+  templateUrl: './view.component.html',
+  styleUrl: './view.component.css'
+})
+export class ViewComponent {
+
+  id!: number;
+  post!: Post;
+
+  constructor(
+    public postService: PostService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) { }
+
+  ngOnInit(): void {
+    this.id = this.route.snapshot.params['postId'];
+    this.postService.find(this.id).subscribe((data: Post) => {
+      this.post = data;
+    });
+  }
+}
+```
+
+### Arquivo: `src/app/post/view/view.component.html`
+
+```html
+<div class="container">
+  <h1>Visualizar Postagem</h1>
+
+  <a href="#" routerLink="/post/index" class="btn btn-primary">Voltar</a>
+
+  <div>
+    <strong>ID:</strong>
+    <p>{{ post.id }}</p>
+  </div>
+
+  <div>
+    <strong>Título:</strong>
+    <p>{{ post.title }}</p>
+  </div>
+
+  <div>
+    <strong>Conteúdo:</strong>
+    <p>{{ post.body }}</p>
+  </div>
+</div>
+```
+
+---
+
+## Atualizar Visualização no `app.component.html`
+
+```html
+<router-outlet></router-outlet>
+```
 
 ### Executar Aplicativo Angular
 
